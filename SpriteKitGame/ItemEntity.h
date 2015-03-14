@@ -1,15 +1,15 @@
 //
 //  ItemEntity.h
-//  SpriteKitGame
+//  Old Frank
 //
-//  Created by Skyler Lauren on 1/25/15.
+//  Created by Skyler Lauren on 3/14/15.
 //  Copyright (c) 2015 Sky Mist Development. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class PlayerEntity, TileStackEntity;
+@class FoodStandEntity, PlayerEntity, TileStackEntity;
 
 @interface ItemEntity : NSManagedObject
 
@@ -21,5 +21,6 @@
 @property (nonatomic, retain) TileStackEntity *tile_stack_background;
 @property (nonatomic, retain) TileStackEntity *tile_stack_foreground;
 @property (nonatomic, retain) TileStackEntity *tile_stack_object;
+@property (nonatomic, retain) FoodStandEntity *food_stand;
 
 @end

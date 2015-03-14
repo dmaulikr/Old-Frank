@@ -23,6 +23,8 @@
 -(NSArray *)fetchEntities:(NSString *)entityName withSortDescriptors:(NSArray *)descriptors;
 -(NSArray *)fetchEntities:(NSString *)entityName withPredicate:(NSPredicate *)predicate withSortDescriptors:(NSArray *)descriptors;
 
+-(NSUInteger)countForEntities:(NSString*)entityName includeSubentities:(BOOL)shouldInclude;
+
 -(id)createNewEntity:(NSString *)entityName;
 -(void)removeEntity:(NSManagedObject *)entity andSave:(BOOL)save;
 

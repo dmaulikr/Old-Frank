@@ -48,9 +48,12 @@
             {
                 NSLog(@"WE DID IT");
                 NSLog(@"SLEEP");
+                CGPoint position = self.player.position;
                 Map *farm = [MapManager mapForName:@"farm"];
+                farm.player = self.player;
                 [farm updateForNewDay];
-                [[TimeManager sharedManager]setTime:480];
+                self.player.position = position;
+                [[TimeManager sharedManager]nextDayForTime:480];
                 self.player.energy = self.player.maxEnergy;
             }
         }];

@@ -23,12 +23,6 @@
 
 -(void)startAnimation;
 
-#if TARGET_OS_IPHONE
-
-#else
--(void)handleEvenet:(NSEvent *)event isDown:(BOOL)downOrUp;
-#endif
-
 @property (weak)id<TextNodeDelegate> delegate;
 @property (nonatomic)CGSize size;
 

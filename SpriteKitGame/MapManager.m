@@ -8,6 +8,7 @@
 
 #import "MapManager.h"
 #import "HouseMap.h"
+#import "FarmMap.h"
 
 @implementation MapManager
 
@@ -17,7 +18,7 @@
     
     if ([mapName isEqualToString:@"farm"])
     {
-        map = [[Map alloc]initWithFileName:mapName];
+        map = [[FarmMap alloc]initWithFileName:mapName];
     }
     else if ([mapName isEqualToString:@"house"])
     {

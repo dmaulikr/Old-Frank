@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "PlantEntity.h"
+#import "TimeManager.h"
 
 @interface Plant : NSObject
 
@@ -16,12 +17,12 @@
 @property (nonatomic)NSInteger stage2Days;
 @property (nonatomic)NSInteger stage3Days;
 @property (nonatomic)NSInteger daysWatered;
+@property (nonatomic)Season season;
 @property (nonatomic)BOOL watered;
 @property (nonatomic)BOOL readyToPick;
 
 @property (nonatomic, strong)PlantEntity *plantEntity;
 
--(id)initWithName:(NSString *)plantName stage1:(NSInteger)stage1 stage2:(NSInteger)stage2 stage3:(NSInteger)stage3;
 
 -(NSInteger)currentStage;
 

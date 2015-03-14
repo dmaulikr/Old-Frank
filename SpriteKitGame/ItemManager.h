@@ -13,6 +13,7 @@
 @interface ItemManager : NSObject
 
 -(Item *)getItem:(NSString *)itemName;
+-(NSArray *)itemsForSale;
 
 +(ItemManager *)sharedManager;
 

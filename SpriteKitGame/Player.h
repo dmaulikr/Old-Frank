@@ -26,10 +26,19 @@ typedef NS_ENUM(NSUInteger, Direction) {
 @property (nonatomic)Direction direction;
 @property (nonatomic, strong)Item *equippedItem;
 @property (nonatomic, strong)Item *equippedTool;
+
 @property (nonatomic)float energy;
 @property (nonatomic)float maxEnergy;
-@property (nonatomic)CGPoint position;
+@property (nonatomic)NSInteger gold;
 
+@property (nonatomic)NSInteger wateringSkill;
+@property (nonatomic)NSInteger hoeSkill;
+@property (nonatomic)NSInteger hammerSkill;
+@property (nonatomic)NSInteger spellbookSkill;
+@property (nonatomic)NSInteger swordSkill;
+@property (nonatomic)NSInteger axeSkill;
+
+@property (nonatomic)CGPoint position;
 
 @property (nonatomic)float frameTimerMax;
 @property (nonatomic)float frameTimer;
@@ -47,10 +56,13 @@ typedef NS_ENUM(NSUInteger, Direction) {
 @property (nonatomic, strong)NSArray *collisionRects;
 
 @property (nonatomic)CGPoint moveVelocity;
+@property (nonatomic)CGPoint moveToPoint;
+@property (nonatomic)BOOL skilledUp;
 
 -(void)update:(float)dt;
 
 -(void)addItemWithName:(NSString *)name;
+-(void)addItemWithName:(NSString *)name withCount:(NSInteger)count;
 
 -(void)equipItem:(Item *)item;
 
@@ -58,5 +70,10 @@ typedef NS_ENUM(NSUInteger, Direction) {
 -(void)unequipItem;
 
 -(void)removeItem;
+
+-(void)addItemToInventory:(Item *)item;
+-(void)removeItemToInventory:(Item *)item;
+
+-(void)useTool;
 
 @end

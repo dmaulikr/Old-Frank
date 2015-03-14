@@ -27,7 +27,7 @@
 -(id)initWithPlayer:(Player *)player
 {
     self = [super initWithImageNamed:player.imageName withWidth:player.columns withHeight:player.rows];
-    
+    self.anchorPoint = CGPointMake(.5, .25);
     self.player = player;
     
     return self;
@@ -35,59 +35,59 @@
 
 -(void)equipItemWithName:(NSString *)name
 {
-    self.eqpuipedToolName = name;
-    [self.gearSprite removeFromParent];
-    
-    if (!name.length)
-    {
-        self.gearSprite = nil;
-        return;
-    }
-    
-    SKTexture *fullTexture = [SKTexture textureWithImageNamed:[NSString stringWithFormat:@"%@_gear", name]];
-    
-    float widthPercent = 1.0f/self.columns;
-    
-    float heightPercent = 1.0f/self.rows;
-    
-    for (NSInteger i = 0; i < self.rows; i++)
-    {
-        NSMutableArray *textureArray = [[NSMutableArray alloc]init];
-        
-        for (NSInteger j = 0; j < self.columns; j++)
-        {
-            SKTexture *texture = [SKTexture textureWithRect:CGRectMake(j*widthPercent, i*heightPercent, widthPercent, heightPercent) inTexture:fullTexture];
-            texture.filteringMode = SKTextureFilteringNearest;
-            [textureArray addObject:texture];
-        }
-        
-        switch (i)
-        {
-                
-            case 3:
-                self.gearDown = textureArray;
-                break;
-            case 2:
-                self.gearUp = textureArray;
-                break;
-            case 1:
-                self.gearLeft = textureArray;
-                break;
-            case 0:
-                self.gearRight = textureArray;
-                break;
-                
-            default:
-                break;
-        }
-    }
-    
-    self.gearArray = @[self.gearUp, self.gearDown, self.gearLeft, self.gearRight];
-    
-   self.gearSprite = [[SKSpriteNode alloc]initWithTexture:self.gearArray[self.player.direction][self.player.frameIndex]];
-    self.gearSprite.zPosition = 1;
-    
-    [self addChild:self.gearSprite];
+//    self.eqpuipedToolName = name;
+//    [self.gearSprite removeFromParent];
+//    
+//    if (!name.length)
+//    {
+//        self.gearSprite = nil;
+//        return;
+//    }
+//    
+//    SKTexture *fullTexture = [SKTexture textureWithImageNamed:[NSString stringWithFormat:@"%@_gear", name]];
+//    
+//    float widthPercent = 1.0f/self.columns;
+//    
+//    float heightPercent = 1.0f/self.rows;
+//    
+//    for (NSInteger i = 0; i < self.rows; i++)
+//    {
+//        NSMutableArray *textureArray = [[NSMutableArray alloc]init];
+//        
+//        for (NSInteger j = 0; j < self.columns; j++)
+//        {
+//            SKTexture *texture = [SKTexture textureWithRect:CGRectMake(j*widthPercent, i*heightPercent, widthPercent, heightPercent) inTexture:fullTexture];
+//            texture.filteringMode = SKTextureFilteringNearest;
+//            [textureArray addObject:texture];
+//        }
+//        
+//        switch (i)
+//        {
+//                
+//            case 3:
+//                self.gearDown = textureArray;
+//                break;
+//            case 2:
+//                self.gearUp = textureArray;
+//                break;
+//            case 1:
+//                self.gearLeft = textureArray;
+//                break;
+//            case 0:
+//                self.gearRight = textureArray;
+//                break;
+//                
+//            default:
+//                break;
+//        }
+//    }
+//    
+//    self.gearArray = @[self.gearUp, self.gearDown, self.gearLeft, self.gearRight];
+//    
+//   self.gearSprite = [[SKSpriteNode alloc]initWithTexture:self.gearArray[self.player.direction][self.player.frameIndex]];
+//    self.gearSprite.zPosition = 1;
+//    
+//    [self addChild:self.gearSprite];
 }
 
 -(void)update

@@ -161,6 +161,11 @@
     <property name="name" value="path_top_bottom"/>
    </properties>
   </tile>
+  <tile id="56">
+   <properties>
+    <property name="name" value="store_sign"/>
+   </properties>
+  </tile>
   <tile id="57">
    <properties>
     <property name="name" value="house_1"/>
@@ -309,15 +314,15 @@
  </tileset>
  <layer name="Tile Layer 1" width="75" height="75" opacity="0.87">
   <data encoding="base64" compression="zlib">
-   eJzt27tOwzAUgOEA3aAwAWLiNkFhgoIECxLQBXHZuGxc3v8ZOEGyqMCOnThJj91/+BaMRPw3CVXsDIqiGABAi7bFTqRdBfPow4E4jDRSMA9a6UIrWtGKVqmgFa1oRatU0IpWtJqtE3EaaaxgHn3YE2cVVj3jxr6CuXTtPHK87u+ljFa0olW3fM/CafXL939uK3LcOFYw19hOqc+hLzlcF7TSh1a0ohWt/loQiwGWej5+ja2WxUqAIa1oRatkW7n2lNHqP9caQtnL9SyBVuHrKLRKu9W62AiwSauf+4XvmVrsM7FcWvVxXLQKZ9aHpxv51n3ntZUxvTau5Zi0tkr9mJoc14W4dIy5vqPXfZcjh1bX4kbcioll3HUfr7t3J4dW9+JBPIonWlV6Fi/iVbw1aGX7Lmfb05NDq3fxIT7Fl2XctX9sXPG3Qn+mwZHls27Kt+8r9VYudfdjjgK6r9Eq+P5ta2Drm9pehqatyvu361pM7XzpulV5npjz4qqo3ueTy77WLq7BXM8zWtGKVvm3ulMwzzbUfd9lXt5tAQAgZ209yzNmPR8AANCNb58P0fM=
+   eJzt2zlPwzAYgOEA3bgmQExQmLgmKEiwIHEsiGPj2Dj+/2/gC5JFBXZsx03qz32HZ8FIxG+TUMXOoKqqAQBM0JbYTjTMYB592BP7iQ4ymAet8kIrWtGKVlrQila0opUWtKIVrabrWJwkGmUwjz7siNMGK55xYzeDuXTtLHE89vc0oxWtaNUt37NwWv3y/Z/bTBw3jjKYa2on7XPoSwnXBa3yQyta0YpWf82J+QALPR9/jq0WxVKAZVrRilZqW7n2lNHqP9caQt3L9SyBVuHrKLTS3WpNrAfYoNXP/cL3TC31mVgprfo4LlqFM+vD4418676z2soYXxvP5ZhybaX9mNoc17m4cIy5vqPHvstRQqsrcS1uxK1l3HUfj927U0Kre/EgHsUTrRo9ixfxKt5atLJ9l7Pt6Smh1bv4EJ/iyzLu2j82avhboT/LwaHls27Lt+9LeyuX2HcZhwHdVwttFbt3NeT+bWtg66ttL0PbVvX923Utajtfum5VnyfmvLismvf5lLKvtYtrsNTzjFa0olX5re4ymKeWVqWIfTdoVt4DAgDoM6lneca05wMAALrxDVE4018=
   </data>
  </layer>
  <layer name="Tile Layer 2" width="75" height="75">
   <data encoding="base64" compression="zlib">
-   eJzt2rkKwlAURdGopVqq/6KlQ+dQOAvO//8NHkgdOBLJzYt7wekeeNmFjWYZACDSpeT+Ca18tPLRykcrH618tPLRykcrH618tPLRykcrAAAAAACAZmtpbWOdqANrpKv1jPWjDqwRWvlo5aOVr6pWTfhdILJVar1o5RtoQ2Ojkp/ThFZVoZWPVt+hEfAbY20SfUQCptpMm2uLgjd8h+eW2kpba5uCN7TKHbSjdtLOBW9olXtoT+2lvYNvQbr476WPVj5a+Wjlo5WPVj5a+WjloxUAoMm22k7bRx+SgKt20+7BdwAAAKTmA46qjGY=
+   eJzt2rkKwlAYROGopVqqz6KWLp1L4S64v/8zOJA6MJKYm5ucD6YL+HOQNJokAICQrjnXJLTy0cpHKx+tfLTy0cpHKx+tfLTy0cpHKx+tAAAAAAAA6q2ltY11Qh1YIV2tZ6wf6sAKoZWPVj5a+cpqVYffBUK2iq0XrXwDbWhslPNz6tCqLLTy0eo3NAKKMdGmoY+IwEybawttmfEM7/DUSltrG22b8QytUkftpJ21S8YztEo9tZf21j6BbwGagP+p+v7ValzgjVXB98pHKx+tfLTy0cpHKx+tACA+O22vHUIfEoGbdtcege8AAACIzRepzoyf
   </data>
  </layer>
- <objectgroup name="Object Layer 1" visible="0">
+ <objectgroup name="Object Layer 1">
   <object x="200.404" y="1039.3" width="334.007" height="259.438"/>
   <object x="577.803" y="1599.32" width="38.8605" height="31.3807"/>
   <object x="663.456" y="1598.88" width="33.337" height="31.9623"/>
@@ -334,6 +339,11 @@
   <object x="625.326" y="1643.6" width="28.7206" height="26.98">
    <properties>
     <property name="playerStart" value="true"/>
+   </properties>
+  </object>
+  <object x="192.685" y="2112.99" width="94.5248" height="61.8047">
+   <properties>
+    <property name="special_object_type" value="food_stand"/>
    </properties>
   </object>
  </objectgroup>

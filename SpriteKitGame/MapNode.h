@@ -25,6 +25,7 @@
 -(id)initWithMap:(Map *)map;
 
 -(void)update;
+-(void)updateFoodStand:(FoodStand *)foodStand;
 
 -(void)launchProjectile:(Item *)item atPoint:(CGPoint)startPoint toPoint:(CGPoint)endPoint;
 

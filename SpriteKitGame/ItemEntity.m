@@ -1,12 +1,13 @@
 //
 //  ItemEntity.m
-//  SpriteKitGame
+//  Old Frank
 //
-//  Created by Skyler Lauren on 1/25/15.
+//  Created by Skyler Lauren on 3/14/15.
 //  Copyright (c) 2015 Sky Mist Development. All rights reserved.
 //
 
 #import "ItemEntity.h"
+#import "FoodStandEntity.h"
 #import "PlayerEntity.h"
 #import "TileStackEntity.h"
 
@@ -21,5 +22,6 @@
 @dynamic tile_stack_background;
 @dynamic tile_stack_foreground;
 @dynamic tile_stack_object;
+@dynamic food_stand;
 
 @end

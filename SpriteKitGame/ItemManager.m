@@ -15,8 +15,6 @@
 
 @end
 
-
-
 @implementation ItemManager
 
 + (ItemManager *)sharedManager {
@@ -37,6 +35,11 @@
     }
     
     Item *storedItem = self.items[itemName];
+    
+    if (!storedItem && ![itemName isEqualToString:@"farm_plot"])
+    {
+        NSLog(@"Error finding Item: %@", itemName);
+    }
     
     Item *item;
     
@@ -63,8 +66,40 @@
     item.impassable = storedItem.impassable;
     item.canPickUp = storedItem.canPickUp;
     item.quantity = 1;
+    item.sellPrice = storedItem.sellPrice;
+    item.purchasePrice = storedItem.purchasePrice;
+    item.sellable = storedItem.sellable;
+    item.energyCost = storedItem.energyCost;
 
     return item;
+}
+
+-(NSArray *)itemsForSale
+{
+    NSMutableArray *itemsToSell = [[NSMutableArray alloc]init];
+    
+    for (Item *item in [self.items allValues])
+    {
+        if (item.purchasePrice)
+        {
+            
+            Item *copyOfItem = [[Item alloc]init];
+            copyOfItem.itemName = item.itemName;
+            copyOfItem.itemType = item.itemType;
+            copyOfItem.maxStack = item.maxStack;
+            copyOfItem.impassable = item.impassable;
+            copyOfItem.canPickUp = item.canPickUp;
+            copyOfItem.quantity = 1;
+            copyOfItem.sellPrice = item.sellPrice;
+            copyOfItem.purchasePrice = item.purchasePrice;
+            copyOfItem.sellable = item.sellable;
+            copyOfItem.energyCost = item.energyCost;
+
+            [itemsToSell addObject:item];
+        }
+    }
+    
+    return itemsToSell;
 }
 
 -(NSString *)getDatabasePath
@@ -129,8 +164,11 @@
                 item.maxStack = [[NSString stringWithUTF8String:(char *)sqlite3_column_text(selectStatement, 2)] integerValue];
                 item.impassable = [[NSString stringWithUTF8String:(char *)sqlite3_column_text(selectStatement, 3)] boolValue];
                 item.canPickUp = [[NSString stringWithUTF8String:(char *)sqlite3_column_text(selectStatement, 4)] boolValue];
-                
-                
+                item.sellPrice = [[NSString stringWithUTF8String:(char *)sqlite3_column_text(selectStatement, 8)] integerValue];
+                item.purchasePrice = [[NSString stringWithUTF8String:(char *)sqlite3_column_text(selectStatement, 9)] integerValue];
+                item.sellable = [[NSString stringWithUTF8String:(char *)sqlite3_column_text(selectStatement, 10)] boolValue];
+                item.energyCost = [[NSString stringWithUTF8String:(char *)sqlite3_column_text(selectStatement, 11)] integerValue];
+
                 item.quantity = 1;
                 if (animated) {
                     NSLog(@"ANIMATED NAME: %@, %@", item.itemName, item);

@@ -17,25 +17,6 @@
     
     self.tileStack = tileStack;
     
-//    ItemSprite *itemSprite = [[ItemSprite alloc]initWithItem:tileStack.backgroundItem];
-//    
-//    if (itemSprite) {
-//        itemSprite.zPosition = 1;
-//        [self addChild:itemSprite];
-//    }
-//    
-//    itemSprite = [[ItemSprite alloc]initWithItem:tileStack.objectItem];
-//    if (itemSprite) {
-//        itemSprite.zPosition = 2;
-//
-//        [self addChild:itemSprite];
-//    }
-//    itemSprite = [[ItemSprite alloc]initWithItem:tileStack.foregroundItem];
-//    if (itemSprite) {
-//        itemSprite.zPosition = 3;
-//
-//        [self addChild:itemSprite];
-//    }
     return self;
 }
 
@@ -56,7 +37,6 @@
         NSLog(@"nil");
     }
     
-    
     _backgroundItemSprite = backgroundItemSprite;
 }
 
@@ -72,7 +52,6 @@
         objectItemSprite.zPosition = 2;
         [self addChild:objectItemSprite];
     }
-    
     
     _objectItemSprite = objectItemSprite;
 }

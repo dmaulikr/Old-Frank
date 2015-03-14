@@ -19,7 +19,7 @@
     SKView * skView = (SKView *)self.view;
    
     skView.ignoresSiblingOrder = YES;
-//    skView.showsFPS = YES;
+    skView.showsFPS = YES;
     
     // Create and configure the scene.
     //SKScene * scene = [MyScene sceneWithSize:CGSizeMake(self.view.bounds.size.height, self.view.bounds.size.width)];
@@ -29,7 +29,6 @@
     
     // Present the scene.
     [skView presentScene:scene];
-    
 }
 
 - (BOOL)shouldAutorotate
@@ -37,14 +36,14 @@
     return YES;
 }
 
-- (NSUInteger)supportedInterfaceOrientations
-{
+-(UIInterfaceOrientationMask)supportedInterfaceOrientations{
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         return UIInterfaceOrientationMaskAllButUpsideDown;
     } else {
         return UIInterfaceOrientationMaskAll;
     }
 }
+
 
 - (void)didReceiveMemoryWarning
 {

@@ -8,6 +8,16 @@
 
 #import "ItemButtonSprite.h"
 
+@class DragItemButtonSprite;
+
+@protocol DragItemButtonSpriteDelegate <NSObject>
+
+-(void)doneDraggingDragItemButtonSprite:(DragItemButtonSprite *)dragItemButtonSprite;
+
+@end
+
 @interface DragItemButtonSprite : ItemButtonSprite
+
+@property (nonatomic, weak)id<DragItemButtonSpriteDelegate> dragDelegate;
 
 @end

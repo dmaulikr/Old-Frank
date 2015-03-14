@@ -18,8 +18,10 @@ typedef NS_ENUM(NSUInteger, ItemType) {
     ItemTypeBackground = 5,
     ItemTypeWood = 6,
     ItemTypeRock = 7,
-    ItemTypeSpellBook = 8,
+    ItemTypeSpellbook = 8,
     ItemTypeFoodstand = 9,
+    ItemTypeSign = 10,
+    ItemTypeHammer = 11,
 };
 
 
@@ -35,5 +37,10 @@ typedef NS_ENUM(NSUInteger, ItemType) {
 @property (nonatomic)NSInteger quantity;
 @property (nonatomic)BOOL impassable;
 @property (nonatomic)BOOL canPickUp;
+@property (nonatomic)NSInteger sellPrice;
+@property (nonatomic)NSInteger purchasePrice;
+@property (nonatomic)BOOL sellable;
+@property (nonatomic)NSInteger energyCost;
+
 
 @end

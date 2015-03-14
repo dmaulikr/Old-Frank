@@ -16,6 +16,7 @@
 #import "TileStackNode.h"
 #import "ItemSprite.h"
 #import "AnimatedItem.h"
+#import "SMDTextureLoader.h"
 
 @interface MapNode ()
 
@@ -30,7 +31,7 @@
 
 @property (nonatomic, strong)NSArray *tileStackNodes;
 
-@property (nonatomic, strong)NSMutableDictionary *textures;
+@property (nonatomic, strong)SMDTextureLoader *textureLoader;
 
 @end
 
@@ -41,30 +42,13 @@
     self = [super init];
     
     if (self) {
-        
+        self.textureLoader = [[SMDTextureLoader alloc]init];
         NSLog(@"Loading Map now");
         self.map = map;
-        self.textures = [[NSMutableDictionary alloc]init];
         [self loadMap:map];
     }
     
     return self;
-}
-
--(SKTexture *)getTextureForName:(NSString *)name
-{
-    
-    SKTexture *texture = self.textures[name];
-    
-    if (!texture)
-    {
-//        NSLog(@"Creating: %@", name);
-        texture = [SKTexture textureWithImageNamed:name];
-        texture.filteringMode = SKTextureFilteringNearest;
-        [self.textures setObject:texture forKey:name];
-    }
-    
-    return texture;
 }
 
 -(void)loadMap:(Map *)map
@@ -109,7 +93,7 @@
                 
                 NSString *itemName = tileStack.backgroundItem.itemName;
                 
-                SKTexture *texture = [self getTextureForName:itemName];
+                SKTexture *texture = [self.textureLoader getTextureForName:itemName];
                 
                 ItemSprite *itemSprite = [ItemSprite spriteNodeWithTexture:texture];
                 itemSprite.name = itemName;
@@ -120,7 +104,7 @@
 
                 NSString *itemName = tileStack.objectItem.itemName;
                 
-                SKTexture *texture = [self getTextureForName:itemName];
+                SKTexture *texture = [self.textureLoader getTextureForName:itemName];
 
                 
                 
@@ -139,7 +123,7 @@
                     {
                         NSString *numberString = [NSString stringWithFormat:@"0%@", @(i+1)];
                         NSString *secondString = [itemName stringByReplacingOccurrencesOfString:@"01" withString:numberString];
-                        SKTexture *texture2 = [self getTextureForName:secondString];
+                        SKTexture *texture2 = [self.textureLoader getTextureForName:secondString];
                         [textures addObject:texture2];
                     }
                    
@@ -157,7 +141,7 @@
             {
                 NSString *itemName = tileStack.foregroundItem.itemName;
                 
-                SKTexture *texture = [self getTextureForName:itemName];
+                SKTexture *texture = [self.textureLoader getTextureForName:itemName];
                 
                 ItemSprite *itemSprite = [ItemSprite spriteNodeWithTexture:texture];
                 itemSprite.name = itemName;
@@ -172,11 +156,14 @@
     
     NSLog(@"Done");
 
-    SKTexture *texture = [SKTexture textureWithImageNamed:@"outline"];
-    texture.filteringMode = SKTextureFilteringNearest;
-    self.outlineSprite = [SKSpriteNode spriteNodeWithTexture:texture];
+    self.outlineSprite = [SKSpriteNode spriteNodeWithTexture:[self.textureLoader getTextureForName:@"outline"]];
     self.outlineSprite.zPosition = 3;
     [self addChild:self.outlineSprite];
+    
+    if (map.foodStand)
+    {
+        [self updateFoodStand:map.foodStand];
+    }
 }
 
 -(void)update
@@ -186,13 +173,14 @@
     
     for (NSValue *value in self.map.dirtyIndexes)
     {
-#if TARGET_OS_IPHONE
         CGPoint index = [value CGPointValue];
-#else
-        CGPoint index = [value pointValue];
-#endif
 
         [self updateTileStackAtIndex:index];
+    }
+    
+    if (self.map.updateFoodStand)
+    {
+        [self updateFoodStand:self.map.foodStand];
     }
 }
 
@@ -212,7 +200,7 @@
         if (tileStack.backgroundItem)
         {
             NSString *itemName = tileStack.backgroundItem.itemName;
-            itemSprite = [[ItemSprite alloc]initWithTexture:[self getTextureForName:itemName]];
+            itemSprite = [[ItemSprite alloc]initWithTexture:[self.textureLoader getTextureForName:itemName]];
             itemSprite.name = itemName;
         }
        
@@ -226,7 +214,7 @@
         if (tileStack.objectItem)
         {
             NSString *itemName = tileStack.objectItem.itemName;
-            itemSprite = [[ItemSprite alloc]initWithTexture:[self getTextureForName:itemName]];
+            itemSprite = [[ItemSprite alloc]initWithTexture:[self.textureLoader getTextureForName:itemName]];
             itemSprite.name = itemName;
         }
         
@@ -240,11 +228,46 @@
         if (tileStack.foregroundItem)
         {
             NSString *itemName = tileStack.foregroundItem.itemName;
-            itemSprite = [[ItemSprite alloc]initWithTexture:[self getTextureForName:itemName]];
+            itemSprite = [[ItemSprite alloc]initWithTexture:[self.textureLoader getTextureForName:itemName]];
             itemSprite.name = itemName;
         }
         
         tileStackNode.foregroundItemSprite = itemSprite;
+    }
+}
+
+-(void)updateFoodStand:(FoodStand *)foodStand
+{
+    NSInteger x = [foodStand.foodStandEntity.item_1_index_x integerValue];
+    NSInteger y = [foodStand.foodStandEntity.item_1_index_y integerValue];
+    
+    for (NSInteger i = 0; i < 3; i++)
+    {
+        TileStackNode *tileStackNode = self.tileStackNodes[x+i][y];
+        SKSpriteNode *objectSprite = tileStackNode.objectItemSprite;
+        
+        //removing old sprites
+        for (SKSpriteNode *sprite in objectSprite.children)
+        {
+            [sprite removeFromParent];
+        }
+    }
+    
+    NSInteger index = 0;
+    
+    for (Item *item in foodStand.items)
+    {
+        TileStackNode *tileStackNode = self.tileStackNodes[x+index][y];
+        SKSpriteNode *objectSprite = tileStackNode.objectItemSprite;
+        
+        SKSpriteNode *itemSprite = [[ItemSprite alloc]initWithTexture:[self.textureLoader getTextureForName:item.itemName]];
+        itemSprite.name = item.itemName;
+        itemSprite.zPosition = 1;
+        [objectSprite addChild:itemSprite];
+        
+        [tileStackNode.backgroundItemSprite removeFromParent];
+
+        index++;
     }
 }
 
@@ -257,7 +280,7 @@
     for (NSInteger i = 0; i < animatedItem.animatedFrames; i++)
     {
         NSString *textureString = [item.itemName stringByReplacingOccurrencesOfString:@"01" withString:[NSString stringWithFormat:@"0%@", @(i+1)]];
-        SKTexture *texture = [self getTextureForName:textureString];
+        SKTexture *texture = [self.textureLoader getTextureForName:textureString];
         [textures addObject:texture];
     }
     

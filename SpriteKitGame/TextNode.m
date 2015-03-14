@@ -8,10 +8,9 @@
 
 #import "TextNode.h"
 #import "ButtonSprite.h"
+#import "SMDTextureLoader.h"
 
 @interface TextNode ()<ButtonSpriteDelegate>
-
-@property (nonatomic, strong)NSMutableDictionary *textures;
 
 @property (nonatomic, strong)NSArray *letters;
 
@@ -26,6 +25,7 @@
 @property (nonatomic, strong)ButtonSprite *contButton;
 
 @property (nonatomic, strong)NSDictionary *imageDictionary;
+@property (nonatomic, strong)SMDTextureLoader *textureLoader;
 
 @end
 
@@ -34,14 +34,12 @@
 -(id)initWithSize:(CGSize)size withDialog:(Dialog *)dialog
 {
     self = [super init];
+    self.textureLoader = [[SMDTextureLoader alloc]init];
     
     self.dialog = dialog;
     self.size = size;
-    
-    SKTexture *texture = [SKTexture textureWithImageNamed:@"dialogBackground"];
-    texture.filteringMode = SKTextureFilteringNearest;
 
-    self.background = [SKSpriteNode spriteNodeWithTexture:texture];
+    self.background = [SKSpriteNode spriteNodeWithTexture:[self.textureLoader getTextureForName:@"dialogBackground"]];
     self.background.centerRect = CGRectMake(.4, .4, .2, .2);
 
     self.background.anchorPoint = CGPointMake(.5, 0);
@@ -103,10 +101,23 @@
                               @"Y" : @"capY",
                               @"Z" : @"capZ",
                               @" " : @"space",
-                              @" " : @"dollar",
+                              @"$" : @"dollar",
                               @"." : @"period",
                               @"?" : @"questionMark",
-                              @"!" : @"explanationMark"};
+                              @"!" : @"explanationMark",
+                              @"0" : @"0",
+                              @"1" : @"1",
+                              @"2" : @"2",
+                              @"3" : @"3",
+                              @"4" : @"4",
+                              @"5" : @"5",
+                              @"6" : @"6",
+                              @"7" : @"7",
+                              @"8" : @"8",
+                              @"9" : @"9",
+                              @":" : @"colon"
+                              };
+
     
     //adding buttons
     NSInteger padding = 10;
@@ -208,7 +219,7 @@
         {
             NSString *tmp_str = [word substringWithRange:NSMakeRange(i, 1)];
             
-            SKTexture *texture = [self getTextureForName:self.imageDictionary[tmp_str]];
+            SKTexture *texture = [self.textureLoader getTextureForName:self.imageDictionary[tmp_str]];
             SKSpriteNode *sprite = [SKSpriteNode spriteNodeWithTexture:texture];
             sprite.anchorPoint = CGPointMake(0, 0);
             sprite.size = CGSizeMake(sprite.size.width * 2, sprite.size.height * 2);
@@ -262,7 +273,7 @@
     {
         NSString *tmp_str = [word substringWithRange:NSMakeRange(i, 1)];
         
-        SKTexture *texture = [self getTextureForName:self.imageDictionary[tmp_str]];
+        SKTexture *texture = [self.textureLoader getTextureForName:self.imageDictionary[tmp_str]];
         SKSpriteNode *sprite = [SKSpriteNode spriteNodeWithTexture:texture];
         sprite.anchorPoint = CGPointMake(0, 0);
         sprite.size = CGSizeMake(sprite.size.width * 2, sprite.size.height * 2);
@@ -306,21 +317,6 @@
     }
 }
 
--(SKTexture *)getTextureForName:(NSString *)name
-{
-    
-    SKTexture *texture = self.textures[name];
-    
-    if (!texture)
-    {
-        texture = [SKTexture textureWithImageNamed:name];
-        texture.filteringMode = SKTextureFilteringNearest;
-        [self.textures setObject:texture forKey:name];
-    }
-    
-    return texture;
-}
-
 -(void)buttonSpritePressed:(ButtonSprite *)buttonSprite
 {
     if (buttonSprite == self.yesButton)
@@ -344,39 +340,5 @@
         self.dialogBlock(DialogResponseNo);
     }
 }
-
-#if TARGET_OS_IPHONE
-
-#else
--(void)handleEvenet:(NSEvent *)event isDown:(BOOL)downOrUp
-{
-    if(event.isARepeat)
-        return;
-    
-    //o
-    if(event.keyCode == 31 && downOrUp)
-    {
-        [self buttonSpritePressed:self.okButton];
-    }
-    //c
-    if(event.keyCode == 8 && downOrUp)
-    {
-        [self buttonSpritePressed:self.contButton];
-    }
-    //y
-    if(event.keyCode == 16 && downOrUp)
-    {
-        [self buttonSpritePressed:self.yesButton];
-    }
-    //n
-    if(event.keyCode == 45 && downOrUp)
-    {
-        [self buttonSpritePressed:self.noButton];
-    }
-    
-}
-
-#endif
-
 
 @end

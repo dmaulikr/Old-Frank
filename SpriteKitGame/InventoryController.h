@@ -17,10 +17,4 @@
 -(id)initWithSize:(CGSize)size andPlayer:(Player *)player;
 -(void)updateViews;
 
-#if TARGET_OS_IPHONE
-
-#else
--(void)handleEvenet:(NSEvent *)event isDown:(BOOL)downOrUp;
-#endif
-
 @end

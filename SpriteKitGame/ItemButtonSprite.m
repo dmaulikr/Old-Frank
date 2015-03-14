@@ -7,9 +7,11 @@
 //
 
 #import "ItemButtonSprite.h"
+#import "SMDTextureLoader.h"
 
 @interface ItemButtonSprite ()
 
+@property (nonatomic, strong)SMDTextureLoader *textureLoader;
 
 @end
 
@@ -17,12 +19,18 @@
 
 -(id)initWithItem:(Item *)item
 {
-    self = [super initWithImageNamed:@"outline"];
+    
+    self = [super init];
+    self.textureLoader = [[SMDTextureLoader alloc]init];
+    
+    self.texture = [self.textureLoader getTextureForName:@"outline"];
+    self.size = self.texture.size;
+    
     self.item = item;
     
     if (item)
     {
-        self.itemSprite = [SKSpriteNode spriteNodeWithImageNamed:item.itemName];
+        self.itemSprite = [SKSpriteNode spriteNodeWithTexture:[self.textureLoader getTextureForName:item.itemName]];
         self.userInteractionEnabled = YES;
         [self addChild:self.itemSprite];
         
@@ -31,8 +39,8 @@
             NSInteger leftDigit = item.quantity/10;
             NSInteger rightDigit = item.quantity-(leftDigit *10);
             
-            SKTexture *rightTexture = [SKTexture textureWithImageNamed:[NSString stringWithFormat:@"num%@", @(rightDigit)]];
-            SKTexture *leftTexture = [SKTexture textureWithImageNamed:[NSString stringWithFormat:@"num%@", @(leftDigit)]];
+            SKTexture *rightTexture = [self.textureLoader getTextureForName:[NSString stringWithFormat:@"num%@", @(rightDigit)]];
+            SKTexture *leftTexture = [self.textureLoader getTextureForName:[NSString stringWithFormat:@"num%@", @(leftDigit)]];
             
             rightTexture.filteringMode = SKTextureFilteringNearest;
             leftTexture.filteringMode = SKTextureFilteringNearest;
@@ -59,8 +67,6 @@
     
     return self;
 }
-
-#if TARGET_OS_IPHONE
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
@@ -91,6 +97,5 @@
 {
     self.alpha = 1;
 }
-#endif
 
 @end

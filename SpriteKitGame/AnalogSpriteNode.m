@@ -7,11 +7,13 @@
 //
 
 #import "AnalogSpriteNode.h"
+#import "SMDTextureLoader.h"
 
 @interface AnalogSpriteNode ()
 
 @property (nonatomic, strong)SKSpriteNode *background;
 @property (nonatomic, strong)SKSpriteNode *joyStick;
+@property (nonatomic, strong)SMDTextureLoader *textureLoader;
 
 @end
 
@@ -19,18 +21,20 @@
 
 -(id)init{
     
+    self.textureLoader = [[SMDTextureLoader alloc]init];
+    
     self = [super initWithColor:[SKColor clearColor] size:CGSizeMake(200,200)];
     
     self.zPosition = 1;
     
-    self.background = [SKSpriteNode spriteNodeWithImageNamed:@"joystic_background"];
+    self.background = [SKSpriteNode spriteNodeWithTexture:[self.textureLoader getTextureForName:@"joystic_background"]];
     self.background.zPosition = 2;
     self.background.alpha = .5;
     [self addChild:self.background];
     
     self.userInteractionEnabled = YES;
     
-    self.joyStick = [SKSpriteNode spriteNodeWithImageNamed:@"joystic"];
+    self.joyStick = [SKSpriteNode spriteNodeWithTexture:[self.textureLoader getTextureForName:@"joystic"]];
     self.joyStick.zPosition = 3;
     self.joyStick.alpha = .5;
     
@@ -48,7 +52,6 @@
     return CGPointMake(x/(self.size.width/2), y/(self.size.height/2));
 }
 
-#if TARGET_OS_IPHONE
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
@@ -107,6 +110,5 @@
 
     self.joyStick.position = self.background.position;
 }
-#endif
 
 @end

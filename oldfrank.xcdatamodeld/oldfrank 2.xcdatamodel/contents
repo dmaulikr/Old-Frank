@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7701" systemVersion="14D2134" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="FoodStandEntity" representedClassName="FoodStandEntity" syncable="YES">
+        <attribute name="item_1_index_x" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="item_1_index_y" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="item_2_index_x" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="item_2_index_y" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="item_3_index_x" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="item_3_index_y" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="items" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ItemEntity" inverseName="food_stand" inverseEntity="ItemEntity" syncable="YES"/>
+        <relationship name="map" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MapEntity" inverseName="food_stand" inverseEntity="MapEntity" syncable="YES"/>
+    </entity>
+    <entity name="ItemEntity" representedClassName="ItemEntity" syncable="YES">
+        <attribute name="item_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="quantity" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="food_stand" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FoodStandEntity" inverseName="items" inverseEntity="FoodStandEntity" syncable="YES"/>
+        <relationship name="player_inventory" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PlayerEntity" inverseName="inventory" inverseEntity="PlayerEntity" syncable="YES"/>
+        <relationship name="player_item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PlayerEntity" inverseName="equppied_item" inverseEntity="PlayerEntity" syncable="YES"/>
+        <relationship name="player_tool" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PlayerEntity" inverseName="equipped_tool" inverseEntity="PlayerEntity" syncable="YES"/>
+        <relationship name="tile_stack_background" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TileStackEntity" inverseName="background_item" inverseEntity="TileStackEntity" syncable="YES"/>
+        <relationship name="tile_stack_foreground" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TileStackEntity" inverseName="foreground_item" inverseEntity="TileStackEntity" syncable="YES"/>
+        <relationship name="tile_stack_object" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TileStackEntity" inverseName="object_item" inverseEntity="TileStackEntity" syncable="YES"/>
+    </entity>
+    <entity name="MapEntity" representedClassName="MapEntity" syncable="YES">
+        <attribute name="add_objects" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="height" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="map_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="start_x" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="start_y" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="tile_width" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="update_time" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="width" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="food_stand" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FoodStandEntity" inverseName="map" inverseEntity="FoodStandEntity" syncable="YES"/>
+        <relationship name="tiles" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TileStackEntity" inverseName="map" inverseEntity="TileStackEntity" syncable="YES"/>
+        <relationship name="triggers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MapTriggerEntity" inverseName="map" inverseEntity="MapTriggerEntity" syncable="YES"/>
+    </entity>
+    <entity name="MapTriggerEntity" representedClassName="MapTriggerEntity" syncable="YES">
+        <attribute name="height" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="map_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="position_x" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="position_y" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="width" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="map" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MapEntity" inverseName="triggers" inverseEntity="MapEntity" syncable="YES"/>
+    </entity>
+    <entity name="PlantEntity" representedClassName="PlantEntity" syncable="YES">
+        <attribute name="days_watered" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="plant_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="watered" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <relationship name="tile_stack" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TileStackEntity" inverseName="plant" inverseEntity="TileStackEntity" syncable="YES"/>
+    </entity>
+    <entity name="PlayerEntity" representedClassName="PlayerEntity" syncable="YES">
+        <attribute name="axe_skill" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="axe_uses" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="energy" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="gold" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="hammer_skill" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="hammer_uses" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="health" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="hoe_skill" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="hoe_uses" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="max_energy" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="max_health" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="spellbook_skill" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="spellbook_uses" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="sword_skill" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="sword_uses" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="watering_skill" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="watering_uses" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="equipped_tool" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ItemEntity" inverseName="player_tool" inverseEntity="ItemEntity" syncable="YES"/>
+        <relationship name="equppied_item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ItemEntity" inverseName="player_item" inverseEntity="ItemEntity" syncable="YES"/>
+        <relationship name="inventory" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ItemEntity" inverseName="player_inventory" inverseEntity="ItemEntity" syncable="YES"/>
+    </entity>
+    <entity name="TileStackEntity" representedClassName="TileStackEntity" syncable="YES">
+        <attribute name="index_x" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="index_y" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="is_farm_plot" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="is_tilled" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="is_watered" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <relationship name="background_item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ItemEntity" inverseName="tile_stack_background" inverseEntity="ItemEntity" syncable="YES"/>
+        <relationship name="foreground_item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ItemEntity" inverseName="tile_stack_foreground" inverseEntity="ItemEntity" syncable="YES"/>
+        <relationship name="map" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MapEntity" inverseName="tiles" inverseEntity="MapEntity" syncable="YES"/>
+        <relationship name="object_item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ItemEntity" inverseName="tile_stack_object" inverseEntity="ItemEntity" syncable="YES"/>
+        <relationship name="plant" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PlantEntity" inverseName="tile_stack" inverseEntity="PlantEntity" syncable="YES"/>
+    </entity>
+    <entity name="TimeEntity" representedClassName="TimeEntity" syncable="YES">
+        <attribute name="current_time" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="day" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="season" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="FoodStandEntity" positionX="-1503" positionY="-279" width="128" height="163"/>
+        <element name="ItemEntity" positionX="-1262" positionY="36" width="128" height="178"/>
+        <element name="MapEntity" positionX="-1676" positionY="27" width="128" height="208"/>
+        <element name="MapTriggerEntity" positionX="-1503" positionY="242" width="128" height="133"/>
+        <element name="PlantEntity" positionX="-1325" positionY="230" width="128" height="103"/>
+        <element name="PlayerEntity" positionX="-1503" positionY="-108" width="128" height="345"/>
+        <element name="TileStackEntity" positionX="-1503" positionY="23" width="128" height="193"/>
+        <element name="TimeEntity" positionX="-1467" positionY="-126" width="128" height="88"/>
+    </elements>
+</model>

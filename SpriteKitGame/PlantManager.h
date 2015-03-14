@@ -11,7 +11,6 @@
 
 @interface PlantManager : NSObject
 
-//+(SKSpriteNode *)seedSpriteForPlant:(NSString *)plant;
 +(Plant *)plantforName:(NSString *)plantName;
 
 @end

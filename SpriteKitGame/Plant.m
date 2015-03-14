@@ -10,19 +10,6 @@
 
 @implementation Plant
 
--(id)initWithName:(NSString *)plantName stage1:(NSInteger)stage1 stage2:(NSInteger)stage2 stage3:(NSInteger)stage3
-{
-    self = [super init];
-    
-    self.plantName = plantName;
-    self.stage1Days = stage1;
-    self.stage2Days = stage2;
-    self.stage3Days = stage3;
-    NSLog(@"PLANT NAME: %@", self.plantName);
-    
-    return self;
-}
-
 -(void)setDaysWatered:(NSInteger)daysWatered
 {
     self.plantEntity.days_watered = @(daysWatered);
@@ -37,6 +24,11 @@
 
 -(NSInteger)currentStage
 {
+    if ([[TimeManager sharedManager]season] != self.season)
+    {
+        return  -1;
+    }
+    
     if (self.daysWatered >= (self.stage1Days + self.stage2Days + self.stage3Days))
     {
         self.readyToPick = YES;

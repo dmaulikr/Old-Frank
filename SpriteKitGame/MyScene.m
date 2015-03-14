@@ -16,13 +16,18 @@
 #import "MapManager.h"
 #import "TimeManager.h"
 #import "TextNode.h"
-#import "FoodStandNode.h"
+#import "FoodStandController.h"
+#import "StoreController.h"
+#import "SMDTextureLoader.h"
+#import "TextSprite.h"
 
-@interface MyScene ()<MapDelegate, ButtonSpriteDelegate, TextNodeDelegate, MapNodeDelegate>
+@interface MyScene ()<MapDelegate, ButtonSpriteDelegate, TextNodeDelegate, MapNodeDelegate, FoodStandControllerDelegate>
 
 @property (nonatomic)CFTimeInterval lastUpdate;
 
 @property (nonatomic, strong)InventoryController *inventoryController;
+@property (nonatomic, strong)FoodStandController *foodStandController;
+@property (nonatomic, strong)StoreController *storeController;
 
 @property (nonatomic, strong)MapNode *mapNode;
 @property (nonatomic, strong)Map *map;
@@ -44,17 +49,16 @@
 
 @property (nonatomic, strong)SKSpriteNode *nightHud;
 
-@property (nonatomic, strong)SKLabelNode *timeLabel;
+@property (nonatomic, strong)TextSprite *timeTextSprite;
 
 @property (nonatomic)BOOL transitioning;
-
-@property (nonatomic, strong)NSMutableDictionary *textures;
 
 @property (nonatomic, strong)TextNode *textNode;
 
 @property (nonatomic)CGPoint velocity;
 
-@property (nonatomic, strong)FoodStandNode *foodStandNode;
+
+@property (nonatomic, strong)SMDTextureLoader *textureLoader;
 
 @end
 
@@ -64,7 +68,8 @@
 
 -(void)didMoveToView:(SKView *)view
 {
-    self.textures = [[NSMutableDictionary alloc]init];
+
+    self.textureLoader = [[SMDTextureLoader alloc]init];
     
     self.physicsWorld.gravity = CGVectorMake(0, 0);
     
@@ -83,27 +88,24 @@
     self.hudNode = [[SKNode alloc]init];
     [self addChild:self.hudNode];
     
-#if TARGET_OS_IPHONE
-    
     self.analogSpriteNode = [[AnalogSpriteNode alloc]init];
     self.analogSpriteNode.position = CGPointMake(self.analogSpriteNode.size.width/2, self.analogSpriteNode.size.height/2);
     [self.hudNode addChild:self.analogSpriteNode];
 
-#else
 
-#endif
     
     
   
     
-    self.nightHud = [SKSpriteNode spriteNodeWithColor:[SKColor blackColor] size:self.view.frame.size];
-    self.nightHud.size = self.view.frame.size;
+    self.nightHud = [SKSpriteNode spriteNodeWithColor:[SKColor blackColor] size:self.size];
+    self.nightHud.size = self.size;
     self.nightHud.position = CGPointMake(self.scene.size.width/2, self.scene.size.height/2);
     
     [self.hudNode addChild:self.nightHud];
     
-
-    self.primaryButton = [[ButtonSprite alloc]initWithTexture:[self getTextureForName:@"primary_background"]];
+   
+    
+    self.primaryButton = [[ButtonSprite alloc]initWithTexture:[self.textureLoader getTextureForName:@"primary_background"]];
     self.primaryButton.delegate = self;
     self.primaryButton.anchorPoint = CGPointMake(0, 0);
     self.primaryButton.position  = CGPointMake(self.scene.size.width-self.primaryButton.size.width-10, 10);// 100;
@@ -119,7 +121,7 @@
 
     [self.primaryButton addChild:self.primaryButtonOverlay];
     
-    self.actionButton = [[ButtonSprite alloc]initWithTexture:[self getTextureForName:@"secondary_background"]];
+    self.actionButton = [[ButtonSprite alloc]initWithTexture:[self.textureLoader getTextureForName:@"secondary_background"]];
     self.actionButton.delegate = self;
     self.actionButton.anchorPoint = CGPointMake(0, 0);
     self.actionButton.position  = CGPointMake(self.scene.size.width-self.actionButton.size.width-10, self.primaryButton.size.height+10);// 100;
@@ -135,8 +137,7 @@
 
     [self.actionButton addChild:self.actionButtonOverlay];
 
-#if TARGET_OS_IPHONE
-    self.inventoryButton = [[ButtonSprite alloc]initWithImageNamed:@"backpack"];
+    self.inventoryButton = [[ButtonSprite alloc] initWithTexture:[self.textureLoader getTextureForName:@"backpack"]];
     self.inventoryButton.delegate = self;
     self.inventoryButton.anchorPoint = CGPointMake(0, 0);
     self.inventoryButton.position  = CGPointMake(10, self.scene.size.height/2);// 100;
@@ -144,58 +145,38 @@
     self.inventoryButton.zPosition = 5;
     
     [self.hudNode addChild:self.inventoryButton];
-#endif
 
-    
-    self.timeLabel = [SKLabelNode labelNodeWithText:@"time"];
-    self.timeLabel.horizontalAlignmentMode = SKLabelHorizontalAlignmentModeCenter;
-    self.timeLabel.verticalAlignmentMode = SKLabelVerticalAlignmentModeTop;
-    self.timeLabel.fontSize = 14;
-    self.timeLabel.position = CGPointMake(self.frame.size.width/2, self.frame.size.height-5);
-    [self.hudNode addChild:self.timeLabel];
-    
+    self.timeTextSprite = [[TextSprite alloc]initWithString:[[TimeManager sharedManager] timeStringValue]];
+    self.timeTextSprite.xScale = 1.5;
+    self.timeTextSprite.yScale = 1.5;
+    self.timeTextSprite.position = CGPointMake(self.size.width/2, self.size.height-self.timeTextSprite.size.height-10);
+    [self.hudNode addChild:self.timeTextSprite];
 
-    SKTexture *texture = [SKTexture textureWithImageNamed:@"energy"];
-    texture.filteringMode = SKTextureFilteringNearest;
-    self.energyBar = [SKSpriteNode spriteNodeWithTexture:texture];
+    self.energyBar = [SKSpriteNode spriteNodeWithTexture:[self.textureLoader getTextureForName:@"energy"]];
     self.energyBar.anchorPoint = CGPointMake(0, 0);
     self.energyBar.centerRect = CGRectMake(.4, .2, .4, .2);
     self.energyBar.xScale = 10;
     self.energyBar.alpha = .6;
 
-    self.energyBar.position  = CGPointMake(0, self.view.frame.size.height-10-5);// 100;
+    self.energyBar.position  = CGPointMake(0, self.size.height-10-5);// 100;
     [self.hudNode addChild:self.energyBar];
 
-    texture = [SKTexture textureWithImageNamed:@"health_bar"];
-    texture.filteringMode = SKTextureFilteringNearest;
-    self.healthBar = [SKSpriteNode spriteNodeWithTexture:texture];
+    self.healthBar = [SKSpriteNode spriteNodeWithTexture:[self.textureLoader getTextureForName:@"health_bar"]];
     self.healthBar.anchorPoint = CGPointMake(0, 0);
     self.healthBar.centerRect = CGRectMake(.4, .2, .4, .2);
     self.healthBar.xScale = 10;
     self.healthBar.alpha = .6;
-    self.healthBar.position  = CGPointMake(0, self.view.frame.size.height-10-17);// 100;
+    self.healthBar.position  = CGPointMake(0, self.size.height-10-17);// 100;
 
     [self.hudNode addChild:self.healthBar];
     
     self.hudNode.zPosition = 10;
-   
+    
+//    self.map.player.gold += 1000;
+    
+//    self.map.player.position = CGPointMake(32, 32);
+    
 }
-
--(SKTexture *)getTextureForName:(NSString *)name
-{
-    
-    SKTexture *texture = self.textures[name];
-    
-    if (!texture)
-    {
-        texture = [SKTexture textureWithImageNamed:name];
-        texture.filteringMode = SKTextureFilteringNearest;
-        [self.textures setObject:texture forKey:name];
-    }
-    
-    return texture;
-}
-
 
 -(void)primaryButtonPressed
 {
@@ -213,132 +194,8 @@
     [self.map actionButtonPressedForPlayer:self.map.player];
 }
 
-#if TARGET_OS_IPHONE
-
-#else
-
-- (void)handleKeyEvent:(NSEvent *)event keyDown:(BOOL)downOrUp
-{
-    if(event.isARepeat)
-        return;
-    
-    if(self.inventoryController.inventorySpriteView.parent)
-    {
-        [self.inventoryController handleEvenet:event isDown:downOrUp];
-        return;
-    }
-    else if (self.textNode.parent)
-    {
-        [self.textNode  handleEvenet:event isDown:downOrUp];
-        return;
-    }
-    
-    float speed = .6;
-    
-    
-    // First check the arrow keys since they are on the numeric keypad.
-    if ([event modifierFlags] & NSNumericPadKeyMask) { // arrow keys have this mask
-        NSString *theArrow = [event charactersIgnoringModifiers];
-        unichar keyChar = 0;
-        if ([theArrow length] == 1) {
-            keyChar = [theArrow characterAtIndex:0];
-            switch (keyChar) {
-                case NSUpArrowFunctionKey:
-                    if (downOrUp)
-                    {
-                        self.velocity = CGPointMake(self.velocity.x, speed);
-                    }
-                    else
-                    {
-                        self.velocity = CGPointMake(self.velocity.x, 0);
-                    }
-
-                    break;
-                case NSLeftArrowFunctionKey:
-                    if (downOrUp)
-                    {
-                        self.velocity = CGPointMake(-speed, self.velocity.y);
-                    }
-                    else
-                    {
-                        self.velocity = CGPointMake(0, self.velocity.y);
-                    }
-                    break;
-                case NSRightArrowFunctionKey:
-                    if (downOrUp)
-                    {
-                        self.velocity = CGPointMake(speed, self.velocity.y);
-                    }
-                    else
-                    {
-                         self.velocity = CGPointMake(0, self.velocity.y);
-                    }
-                
-                    break;
-                case NSDownArrowFunctionKey:
-                    if (downOrUp)
-                    {
-                        self.velocity = CGPointMake(self.velocity.x, -speed);
-                    }
-                    else
-                    {
-                        self.velocity = CGPointMake(self.velocity.x, 0);
-                    }
-                    break;
-            }
-        }
-    }
-    
-    
-    // / (slash)
-    if(event.keyCode == 44 && downOrUp)
-    {
-        [self actionButtonPressed];
-    }
-    
-    //i
-    if(event.keyCode == 34 && downOrUp)
-    {
-        [self inventoryButtonPressed];
-    }
-    
-    //space
-    if(event.keyCode == 49 && downOrUp)
-    {
-        [self.map primaryButtonPressedForPlayer:self.map.player];
-    }
-    
-    //y
-    if(event.keyCode == 16 && downOrUp && self.textNode.parent)
-    {
-        [self didSelectAnswer:@"yes" forTextNode:self.textNode];
-    }
-    //n
-    else if(event.keyCode == 45 && downOrUp && self.textNode.parent)
-    {
-        [self didSelectAnswer:@"no" forTextNode:self.textNode];
-    }
-    
-    
-}
-
-- (void)keyDown:(NSEvent *)event {
-    [self handleKeyEvent:event keyDown:YES];
-}
-
-- (void)keyUp:(NSEvent *)event {
-    [self handleKeyEvent:event keyDown:NO];
-}
-
-#endif
 
 #pragma mark - Update
-
--(void)didSimulatePhysics
-{
-    
-}
-
 
 
 -(void)update:(CFTimeInterval)currentTime
@@ -352,7 +209,7 @@
     
     if (self.map.player.equippedTool)
     {
-        self.primaryButtonOverlay.texture = [self getTextureForName:self.map.player.equippedTool.itemName];
+        self.primaryButtonOverlay.texture = [self.textureLoader getTextureForName:self.map.player.equippedTool.itemName];
     }
     else
     {
@@ -361,14 +218,12 @@
     
     
     
-#if TARGET_OS_IPHONE
     self.velocity = [self.analogSpriteNode velocity];
-#endif
     
     float timeBetweenUpdates = currentTime-self.lastUpdate;
     
-    self.timeLabel.text = [[TimeManager sharedManager]timeStringValue];
-        
+    self.timeTextSprite.text = [[TimeManager sharedManager]timeStringValue];
+    
     if (!self.transitioning)
     {
         self.map.player.moveVelocity = self.velocity;
@@ -376,10 +231,24 @@
         [self.map update:timeBetweenUpdates];
     }
     
+    if (self.map.player.skilledUp)
+    {
+        TextSprite *levelUp = [[TextSprite alloc]initWithString:@"Skill Up!"];
+        levelUp.position = CGPointMake(self.view.frame.size.width/2, self.view.frame.size.height/2);
+        [levelUp setScale:4];
+        [self.hudNode addChild:levelUp];
+        
+        SKAction *fadeAction = [SKAction fadeAlphaTo:0 duration:2];
+        SKAction *removeAction = [SKAction removeFromParent];
+        
+        SKAction *sequence = [SKAction sequence:@[fadeAction, removeAction]];
+        
+        [levelUp runAction:sequence];
+    }
+    
     [self.mapNode update];
     
-    [self.map.dirtyIndexes removeAllObjects];
-
+    [self.map clean];
     
     self.mapNode.position = CGPointMake(-self.mapNode.animatedSpriteNode.position.x+self.scene.size.width/2, -self.mapNode.animatedSpriteNode.position.y+self.scene.size.height/2);
     
@@ -420,17 +289,17 @@
             break;
             
         case ActionButtonTypeHarvest:
-            self.actionButtonOverlay.texture = [self getTextureForName:@"harvest"];
+            self.actionButtonOverlay.texture = [self.textureLoader getTextureForName:@"harvest"];
             break;
         
         case ActionButtonTypeSleep:
-            self.actionButtonOverlay.texture = [self getTextureForName:@"sleep"];
+            self.actionButtonOverlay.texture = [self.textureLoader getTextureForName:@"sleep"];
             break;
         case ActionButtonTypeOpen:
-            self.actionButtonOverlay.texture = [self getTextureForName:@"unknown"];
+            self.actionButtonOverlay.texture = [self.textureLoader getTextureForName:@"unknown"];
             break;
         case ActionButtonTypeTalk:
-            self.actionButtonOverlay.texture = [self getTextureForName:@"unknown"];
+            self.actionButtonOverlay.texture = [self.textureLoader getTextureForName:@"unknown"];
             break;
             
             
@@ -440,7 +309,7 @@
     
     if (self.map.actionButtonType == ActionButtonTypeNone && self.map.player.equippedItem)
     {
-        self.actionButtonOverlay.texture = [self getTextureForName:self.map.player.equippedItem.itemName];
+        self.actionButtonOverlay.texture = [self.textureLoader getTextureForName:self.map.player.equippedItem.itemName];
     }
    
     
@@ -575,13 +444,17 @@
     [self.map doneWithProjectile:projectile atPoint:point];
 }
 
--(void)showFoodStand
+-(void)showFoodStand:(FoodStand *)foodStand
 {
-    
-    self.foodStandNode = [[FoodStandNode alloc]initWithSize:self.size withPlayer:self.map.player];
-    
-    [self addChild:self.foodStandNode];
+    self.foodStandController = [[FoodStandController alloc]initWithSize:self.size withFoodStand:(FoodStand *)foodStand withPlayer:self.map.player];
+    self.foodStandController.delegate = self;
+    [self addChild:self.foodStandController.foodStandSpriteView];
+}
 
+-(void)showStore
+{
+    self.storeController = [[StoreController alloc]initWithSize:self.size andPlayer:self.map.player];
+    [self addChild:self.storeController.storeSpriteView];
 }
 
 #pragma mark - TextNodeDelegate
@@ -600,5 +473,11 @@
     [textNode runAction:sequence];
 }
 
+#pragma mark - FoodStandControllerDelegate
+
+-(void)doneWithFoodStand:(FoodStand *)foodStand
+{
+    self.map.updateFoodStand = YES;
+}
 
 @end

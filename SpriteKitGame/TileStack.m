@@ -59,6 +59,11 @@
         [[SMDCoreDataHelper sharedHelper]save];
     
     _objectItem = objectItem;
+    
+    if (objectItem && !objectItem.itemName)
+    {
+        NSLog(@"Error adding object without a name");
+    }
 
 }
 
@@ -147,7 +152,7 @@
         [[SMDCoreDataHelper sharedHelper]removeEntity:self.tileStackEntity.plant andSave:YES];
     }
     
-    if (self.tileStackEntity)
+    if (self.tileStackEntity && plant)
     {
         Item *item = [[ItemManager sharedManager]getItem:@"planted_seeds"];
         self.objectItem = item;
@@ -181,6 +186,12 @@
                 
                 self.plant = nil;
             }
+            else if (plantStage == -1)
+            {
+                Item *item = [[ItemManager sharedManager]getItem:@"weed"];
+                self.objectItem = item;
+                self.plant = nil;
+            }
             else if (![self.objectItem.itemName isEqualToString:plantName] && plantStage)
             {
                 Item *item = [[ItemManager sharedManager]getItem:plantName];
@@ -198,6 +209,17 @@
     {
         Item *item = [[ItemManager sharedManager]getItem:@"dirt_5"];
         self.backgroundItem = item;
+    }
+    
+    //check if plant needs to be destroyed
+    if (self.plant)
+    {
+        if ([self.plant currentStage] == -1)
+        {
+//            Item *item = [[ItemManager sharedManager]getItem:@"weed"];
+//            self.objectItem = item;
+//            self.plant = nil;
+        }
     }
     
     self.isWatered = NO;
